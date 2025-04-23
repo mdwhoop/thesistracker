@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Writing Tracker</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f3e8ff;
+      color: #4b3869;
+      padding: 2rem;
+    }
+    h1, h2 {
+      color: #7e57c2;
+    }
+    .container {
+      max-width: 700px;
+      margin: auto;
+    }
+    textarea, input, button, select {
+      width: 100%;
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 1rem;
+      font-size: 1rem;
+    }
+    button {
+      background-color: #ce93d8;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #ba68c8;
+    }
+    .summary, .lyric, .graph-container {
+      margin-top: 2rem;
+      background-color: #ede7f6;
+      padding: 1rem;
+      border-radius: 1rem;
+    }
+    .emoji-select {
+      font-size: 1.5rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📖 Writing Tracker</h1>
+
+    <label for="task">Task Description:</label>
+    <input type="text" id="task" placeholder="e.g., Write chapter 3 intro" />
+
+    <label for="words">Word Count:</label>
+    <input type="number" id="words" placeholder="e.g., 500" />
+
+    <label for="note">Note for Tomorrow:</label>
+    <textarea id="note" rows="3" placeholder="Where you left off, thoughts, etc."></textarea>
+
+    <label for="mood">Mood:</label>
+    <select id="mood" class="emoji-select">
+      <option value="😊">😊 Happy</option>
+      <option value="😐">😐 Meh</option>
+      <option value="😫">😫 Tired</option>
+      <option value="🤩">🤩 Inspired</option>
+      <option value="😭">😭 Stressed</option>
+    </select>
+
+    <button onclick="addEntry()">Add Entry</button>
+
+    <div class="summary">
+      <h2>Summary</h2>
+      <p><strong>This Week's Words:</strong> <span id="weeklyTotal">0</span></p>
+      <p><strong>This Month's Words:</strong> <span id="monthlyTotal">0</span></p>
+      <p><strong>Latest Note:</strong> <span id="latestNote">None yet.</span></p>
+      <p><strong>Latest Mood:</strong> <span id="latestMood">None yet.</span></p>
+    </div>
+
+    <div class="graph-container">
+      <h2>📈 Word Count Graph</h2>
+      <canvas id="wordChart" height="200"></canvas>
+    </div>
+
+    <div class="lyric">
+      <h2>🎵 Taylor Swift Lyric of the Day</h2>
+      <blockquote id="tswiftLyric">"And if I'm dead to you, why are you at the wake?" – *my tears ricochet*</blockquote>
+    </div>
+  </div>
+
+  <script>
+    let entries = JSON.parse(localStorage.getItem('entries')) || [];
+    const lyrics = [
+      "I think he did it, but I just can't prove it – *no body, no crime*",
+      "I'm a mirrorball, I'll show you every version of yourself tonight – *mirrorball*",
+      "You drew stars around my scars – *cardigan*",
+      "We gather here, we line up, weepin' in a sunlit room – *champagne problems*",
+      "Time, curious time, gave me no compasses, gave me no signs – *invisible string*"
+    ];
+
+    function getLyric() {
+      const lyric = lyrics[Math.floor(Math.random() * lyrics.length)];
+      document.getElementById('tswiftLyric').textContent = lyric;
+    }
+
+    function addEntry() {
+      const task = document.getElementById('task').value;
+      const words = parseInt(document.getElementById('words').value) || 0;
+      const note = document.getElementById('note').value;
+      const mood = document.getElementById('mood').value;
+      const date = new Date();
+      const entry = { task, words, note, mood, date: date.toISOString() };
+      entries.push(entry);
+      localStorage.setItem('entries', JSON.stringify(entries));
+
+      document.getElementById('task').value = '';
+      document.getElementById('words').value = '';
+      document.getElementById('note').value = '';
+
+      updateSummary();
+    }
+
+    function updateSummary() {
+      const now = new Date();
+      let weeklyTotal = 0;
+      let monthlyTotal = 0;
+      let latestNote = 'None yet.';
+      let latestMood = 'None yet.';
+      const weekAgo = new Date();
+      weekAgo.setDate(now.getDate() - 7);
+      const monthAgo = new Date();
+      monthAgo.setMonth(now.getMonth() - 1);
+      const dataPoints = {};
+
+      for (const entry of entries) {
+        const entryDate = new Date(entry.date);
+        const dayKey = entryDate.toISOString().slice(0, 10);
+        if (!dataPoints[dayKey]) dataPoints[dayKey] = 0;
+        dataPoints[dayKey] += entry.words;
+        if (entryDate >= weekAgo) weeklyTotal += entry.words;
+        if (entryDate >= monthAgo) monthlyTotal += entry.words;
+      }
+
+      if (entries.length > 0) {
+        latestNote = entries[entries.length - 1].note;
+        latestMood = entries[entries.length - 1].mood;
+      }
+
+      document.getElementById('weeklyTotal').textContent = weeklyTotal;
+      document.getElementById('monthlyTotal').textContent = monthlyTotal;
+      document.getElementById('latestNote').textContent = latestNote;
+      document.getElementById('latestMood').textContent = latestMood;
+      getLyric();
+      drawChart(dataPoints);
+    }
+
+    function drawChart(dataPoints) {
+      const ctx = document.getElementById('wordChart').getContext('2d');
+      const labels = Object.keys(dataPoints).sort();
+      const data = labels.map(date => dataPoints[date]);
+      if (window.wordChartInstance) window.wordChartInstance.destroy();
+      window.wordChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Words Written',
+            data,
+            fill: false,
+            borderColor: '#7e57c2',
+            tension: 0.3
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+    }
+
+    updateSummary();
+  </script>
+</body>
+</html>
