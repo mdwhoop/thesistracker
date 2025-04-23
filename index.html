@@ -79,6 +79,27 @@
       font-size: 1.2rem;
       font-style: italic;
     }
+    /* New Style for Previous Entries Section */
+    .previous-entries {
+      width: 100%;
+      background-color: #ede7f6;
+      padding: 1rem;
+      border-radius: 1rem;
+      margin-top: 2rem;
+    }
+    .previous-entries h2 {
+      text-align: center;
+    }
+    .previous-entries ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    .previous-entries li {
+      margin-bottom: 1rem;
+      background-color: #f9f1ff;
+      padding: 1rem;
+      border-radius: 1rem;
+    }
   </style>
 </head>
 <body>
@@ -124,7 +145,7 @@
     <div class="right-column">
       <div class="graph-container">
         <h2>📈 Word Count Graph</h2>
-        <canvas id="wordChart" height="200"></canvas>
+        <canvas id="wordChart" height="100"></canvas>
       </div>
 
       <h2>Task List</h2>
@@ -132,6 +153,12 @@
       <button onclick="addTask()">Add Task</button>
       <ul id="taskList"></ul>
     </div>
+  </div>
+
+  <!-- Previous Entries Section -->
+  <div class="previous-entries">
+    <h2>Previous Entries</h2>
+    <ul id="entryList"></ul>
   </div>
 
   <script>
@@ -165,6 +192,7 @@
       document.getElementById('note').value = '';
 
       updateSummary();
+      renderEntries();
     }
 
     function updateSummary() {
@@ -227,6 +255,16 @@
       });
     }
 
+    function renderEntries() {
+      const entryList = document.getElementById('entryList');
+      entryList.innerHTML = '';
+      entries.forEach(entry => {
+        const entryItem = document.createElement('li');
+        entryItem.textContent = `${entry.date.slice(0, 10)}: ${entry.task} – ${entry.words} words`;
+        entryList.appendChild(entryItem);
+      });
+    }
+
     function renderTaskList() {
       const taskList = document.getElementById('taskList');
       taskList.innerHTML = '';
@@ -256,6 +294,7 @@
     }
 
     renderTaskList();
+    renderEntries();
     updateSummary();
   </script>
 </body>
