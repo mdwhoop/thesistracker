@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Writing Tracker</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Embed Winky Rough Font -->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Winky+Rough:ital,wght@0,300..900;1,300..900&display=swap');
+  </style>
+
   <style>
     body {
       font-family: 'Winky Rough', cursive;
@@ -112,19 +118,18 @@
         <p><strong>Latest Note:</strong> <span id="latestNote">None yet.</span></p>
         <p><strong>Latest Mood:</strong> <span id="latestMood">None yet.</span></p>
       </div>
+    </div>
 
+    <!-- Right Column: Graph and Task List -->
+    <div class="right-column">
       <div class="graph-container">
         <h2>📈 Word Count Graph</h2>
         <canvas id="wordChart" height="200"></canvas>
       </div>
-    </div>
 
-    <!-- Right Column: Task List -->
-    <div class="right-column">
       <h2>Task List</h2>
-      <ul id="entriesList"></ul>
-
-      <h2>Tasks</h2>
+      <input type="text" id="newTask" placeholder="Add a new task" />
+      <button onclick="addTask()">Add Task</button>
       <ul id="taskList"></ul>
     </div>
   </div>
@@ -238,6 +243,16 @@
         taskItem.appendChild(button);
         taskList.appendChild(taskItem);
       });
+    }
+
+    function addTask() {
+      const newTask = document.getElementById('newTask').value;
+      if (newTask) {
+        tasks.push(newTask);
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+        document.getElementById('newTask').value = '';
+        renderTaskList();
+      }
     }
 
     renderTaskList();
