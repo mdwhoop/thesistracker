@@ -37,7 +37,7 @@
     button:hover {
       background-color: #ba68c8;
     }
-    .summary, .lyric, .graph-container {
+    .summary, .graph-container, .task-list, .entries {
       margin-top: 2rem;
       background-color: #ede7f6;
       padding: 1rem;
@@ -47,12 +47,45 @@
       font-size: 1.5rem;
       text-align: center;
     }
+
+    /* Taylor Swift lyric banner */
+    .lyric-banner {
+      background-color: #7e57c2;
+      color: white;
+      padding: 1rem;
+      border-radius: 1rem;
+      text-align: center;
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    /* Task list styling */
+    .task-list ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .task-list li {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .task-list input[type="checkbox"] {
+      margin-right: 10px;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>📖 Writing Tracker</h1>
 
+    <!-- Taylor Swift Lyric Banner -->
+    <div class="lyric-banner">
+      <blockquote id="tswiftLyric">"And if I'm dead to you, why are you at the wake?" – *my tears ricochet*</blockquote>
+    </div>
+
+    <!-- Task Description and Word Count -->
     <label for="task">Task Description:</label>
     <input type="text" id="task" placeholder="e.g., Write chapter 3 intro" />
 
@@ -73,6 +106,21 @@
 
     <button onclick="addEntry()">Add Entry</button>
 
+    <!-- Task List Section -->
+    <div class="task-list">
+      <h2>📋 Task List</h2>
+      <input type="text" id="newTask" placeholder="Add a new task" />
+      <button onclick="addTask()">Add Task</button>
+      <ul id="taskList"></ul>
+    </div>
+
+    <!-- Entries Summary Section -->
+    <div class="entries">
+      <h2>Your Entries</h2>
+      <ul id="entriesList"></ul>
+    </div>
+
+    <!-- Summary and Graph Section -->
     <div class="summary">
       <h2>Summary</h2>
       <p><strong>This Week's Words:</strong> <span id="weeklyTotal">0</span></p>
@@ -85,15 +133,11 @@
       <h2>📈 Word Count Graph</h2>
       <canvas id="wordChart" height="200"></canvas>
     </div>
-
-    <div class="lyric">
-      <h2>🎵 Taylor Swift Lyric of the Day</h2>
-      <blockquote id="tswiftLyric">"And if I'm dead to you, why are you at the wake?" – *my tears ricochet*</blockquote>
-    </div>
   </div>
 
   <script>
     let entries = JSON.parse(localStorage.getItem('entries')) || [];
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
     const lyrics = [
       "I think he did it, but I just can't prove it – *no body, no crime*",
       "I'm a mirrorball, I'll show you every version of yourself tonight – *mirrorball*",
@@ -122,6 +166,47 @@
       document.getElementById('note').value = '';
 
       updateSummary();
+    }
+
+    function addTask() {
+      const newTask = document.getElementById('newTask').value;
+      if (newTask) {
+        tasks.push({ task: newTask, completed: false });
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+        document.getElementById('newTask').value = '';
+        renderTaskList();
+      }
+    }
+
+    function toggleTask(index) {
+      tasks[index].completed = !tasks[index].completed;
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+      renderTaskList();
+    }
+
+    function renderTaskList() {
+      const taskList = document.getElementById('taskList');
+      taskList.innerHTML = '';
+      tasks.forEach((task, index) => {
+        const taskItem = document.createElement('li');
+        taskItem.innerHTML = `
+          <input type="checkbox" ${task.completed ? 'checked' : ''} onclick="toggleTask(${index})">
+          ${task.task}
+        `;
+        taskList.appendChild(taskItem);
+      });
+    }
+
+    function renderEntries() {
+      const entriesList = document.getElementById('entriesList');
+      entriesList.innerHTML = '';
+      entries.forEach(entry => {
+        const entryItem = document.createElement('li');
+        entryItem.innerHTML = `
+          <strong>${entry.task}</strong> – ${entry.words} words – ${entry.mood}
+        `;
+        entriesList.appendChild(entryItem);
+      });
     }
 
     function updateSummary() {
@@ -156,6 +241,7 @@
       document.getElementById('latestMood').textContent = latestMood;
       getLyric();
       drawChart(dataPoints);
+      renderEntries();
     }
 
     function drawChart(dataPoints) {
@@ -184,6 +270,8 @@
       });
     }
 
+    // Initialize on page load
+    renderTaskList();
     updateSummary();
   </script>
 </body>
