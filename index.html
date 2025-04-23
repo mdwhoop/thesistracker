@@ -5,40 +5,68 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Writing Tracker</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  
-  <!-- Embed Winky Rough Font -->
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Winky+Rough:ital,wght@0,300..900;1,300..900&display=swap');
-  </style>
-
-  <style>
+    /* Add sidebar and toggle button styles here */
     body {
       font-family: 'Winky Rough', cursive;
       background-color: #f3e8ff;
+      margin: 0;
+      display: flex;
+    }
+    /* Sidebar container */
+    .sidebar {
+      position: fixed;
+      height: 100vh;
+      width: 0;
+      overflow-x: hidden;
+      background-color: #7e57c2;
+      transition: 0.5s;
+      padding-top: 2rem;
+    }
+    .sidebar a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      padding: 1rem;
+      font-size: 1.2rem;
+      border-bottom: 1px solid #fff;
+      transition: 0.3s;
+    }
+    .sidebar a:hover {
+      background-color: #ba68c8;
+    }
+    /* Toggle button styles */
+    .openbtn {
+      font-size: 1.5rem;
+      color: white;
+      background-color: #7e57c2;
+      border: none;
+      cursor: pointer;
+      padding: 1rem;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+    /* Page content style */
+    .content {
+      margin-left: 0;
+      padding: 2rem;
+      transition: margin-left 0.5s;
+      width: 100%;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f3e8ff;
       color: #4b3869;
       padding: 2rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
     }
-    h1 {
-      font-size: 5rem;
-      color: #7e57c2;
-      text-align: center;
-    }
-    h2 {
-      font-size: 2rem;
+    h1, h2 {
       color: #7e57c2;
     }
     .container {
-      display: flex;
-      max-width: 1200px;
-      width: 100%;
-      gap: 2rem;
-      justify-content: space-between;
-    }
-    .left-column, .right-column {
-      width: 48%;
+      max-width: 700px;
+      margin: auto;
     }
     textarea, input, button, select {
       width: 100%;
@@ -68,84 +96,87 @@
       font-size: 1.5rem;
       text-align: center;
     }
-    .lyric-banner {
-      background-color: #e1bee7;
-      padding: 1rem;
-      border-radius: 1rem;
-      margin-bottom: 1rem;
-      text-align: center;
-    }
-    .lyric-banner blockquote {
-      font-size: 1.2rem;
-      font-style: italic;
-    }
   </style>
 </head>
 <body>
-  <h1>📖 Writing Tracker</h1>
-  
-  <div class="lyric-banner">
-    <blockquote id="tswiftLyric">"And if I'm dead to you, why are you at the wake?" – *my tears ricochet*</blockquote>
+
+  <!-- The sidebar menu -->
+  <div id="mySidebar" class="sidebar">
+    <a href="index.html">Home</a>
+    <a href="tasks.html">Task List</a>
+    <a href="settings.html">Settings</a>
   </div>
-  
-  <div class="container">
-    <!-- Left Column: Writing Tracker -->
-    <div class="left-column">
-      <label for="task">Task Description:</label>
-      <input type="text" id="task" placeholder="e.g., Write chapter 3 intro" />
 
-      <label for="words">Word Count:</label>
-      <input type="number" id="words" placeholder="e.g., 500" />
+  <!-- Open button for the sidebar -->
+  <button class="openbtn" onclick="toggleNav()">☰</button>
 
-      <label for="note">Note for Tomorrow:</label>
-      <textarea id="note" rows="3" placeholder="Where you left off, thoughts, etc."></textarea>
+  <!-- Main content area -->
+  <div class="content">
+    <h1>📖 Writing Tracker</h1>
 
-      <label for="mood">Mood:</label>
-      <select id="mood" class="emoji-select">
-        <option value="😊">😊 Happy</option>
-        <option value="😐">😐 Meh</option>
-        <option value="😫">😫 Tired</option>
-        <option value="🤩">🤩 Inspired</option>
-        <option value="😭">😭 Stressed</option>
-      </select>
+    <label for="task">Task Description:</label>
+    <input type="text" id="task" placeholder="e.g., Write chapter 3 intro" />
 
-      <button onclick="addEntry()">Add Entry</button>
+    <label for="words">Word Count:</label>
+    <input type="number" id="words" placeholder="e.g., 500" />
 
-      <div class="summary">
-        <h2>Summary</h2>
-        <p><strong>This Week's Words:</strong> <span id="weeklyTotal">0</span></p>
-        <p><strong>This Month's Words:</strong> <span id="monthlyTotal">0</span></p>
-        <p><strong>Latest Note:</strong> <span id="latestNote">None yet.</span></p>
-        <p><strong>Latest Mood:</strong> <span id="latestMood">None yet.</span></p>
-      </div>
+    <label for="note">Note for Tomorrow:</label>
+    <textarea id="note" rows="3" placeholder="Where you left off, thoughts, etc."></textarea>
+
+    <label for="mood">Mood:</label>
+    <select id="mood" class="emoji-select">
+      <option value="😊">😊 Happy</option>
+      <option value="😐">😐 Meh</option>
+      <option value="😫">😫 Tired</option>
+      <option value="🤩">🤩 Inspired</option>
+      <option value="😭">😭 Stressed</option>
+    </select>
+
+    <button onclick="addEntry()">Add Entry</button>
+
+    <div class="summary">
+      <h2>Summary</h2>
+      <p><strong>This Week's Words:</strong> <span id="weeklyTotal">0</span></p>
+      <p><strong>This Month's Words:</strong> <span id="monthlyTotal">0</span></p>
+      <p><strong>Latest Note:</strong> <span id="latestNote">None yet.</span></p>
+      <p><strong>Latest Mood:</strong> <span id="latestMood">None yet.</span></p>
     </div>
 
-    <!-- Right Column: Graph and Task List -->
-    <div class="right-column">
-      <div class="graph-container">
-        <h2>📈 Word Count Graph</h2>
-        <canvas id="wordChart" height="200"></canvas>
-      </div>
+    <div class="graph-container">
+      <h2>📈 Word Count Graph</h2>
+      <canvas id="wordChart" height="200"></canvas>
+    </div>
 
-      <h2>Task List</h2>
-      <input type="text" id="newTask" placeholder="Add a new task" />
-      <button onclick="addTask()">Add Task</button>
-      <ul id="taskList"></ul>
+    <div class="lyric">
+      <h2>🎵 Taylor Swift Lyric of the Day</h2>
+      <blockquote id="tswiftLyric">"And if I'm dead to you, why are you at the wake?" – *my tears ricochet*</blockquote>
     </div>
   </div>
 
   <script>
+    // Sidebar toggle function
+    function toggleNav() {
+      const sidebar = document.getElementById("mySidebar");
+      const content = document.querySelector(".content");
+      if (sidebar.style.width === "250px") {
+        sidebar.style.width = "0";
+        content.style.marginLeft = "0";
+      } else {
+        sidebar.style.width = "250px";
+        content.style.marginLeft = "250px";
+      }
+    }
+
     let entries = JSON.parse(localStorage.getItem('entries')) || [];
-    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    const lyrics = [
+      "I think he did it, but I just can't prove it – *no body, no crime*",
+      "I'm a mirrorball, I'll show you every version of yourself tonight – *mirrorball*",
+      "You drew stars around my scars – *cardigan*",
+      "We gather here, we line up, weepin' in a sunlit room – *champagne problems*",
+      "Time, curious time, gave me no compasses, gave me no signs – *invisible string*"
+    ];
 
     function getLyric() {
-      const lyrics = [
-        "I think he did it, but I just can't prove it – *no body, no crime*",
-        "I'm a mirrorball, I'll show you every version of yourself tonight – *mirrorball*",
-        "You drew stars around my scars – *cardigan*",
-        "We gather here, we line up, weepin' in a sunlit room – *champagne problems*",
-        "Time, curious time, gave me no compasses, gave me no signs – *invisible string*"
-      ];
       const lyric = lyrics[Math.floor(Math.random() * lyrics.length)];
       document.getElementById('tswiftLyric').textContent = lyric;
     }
@@ -227,35 +258,6 @@
       });
     }
 
-    function renderTaskList() {
-      const taskList = document.getElementById('taskList');
-      taskList.innerHTML = '';
-      tasks.forEach((task, index) => {
-        const taskItem = document.createElement('li');
-        taskItem.textContent = task;
-        const button = document.createElement('button');
-        button.textContent = 'Mark as Complete';
-        button.onclick = () => {
-          tasks.splice(index, 1);
-          localStorage.setItem('tasks', JSON.stringify(tasks));
-          renderTaskList();
-        };
-        taskItem.appendChild(button);
-        taskList.appendChild(taskItem);
-      });
-    }
-
-    function addTask() {
-      const newTask = document.getElementById('newTask').value;
-      if (newTask) {
-        tasks.push(newTask);
-        localStorage.setItem('tasks', JSON.stringify(tasks));
-        document.getElementById('newTask').value = '';
-        renderTaskList();
-      }
-    }
-
-    renderTaskList();
     updateSummary();
   </script>
 </body>
