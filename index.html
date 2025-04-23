@@ -5,15 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Writing Tracker</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Winky+Rough&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Winky Rough', cursive;
       background-color: #f3e8ff;
       color: #4b3869;
       padding: 2rem;
     }
     h1, h2 {
       color: #7e57c2;
+      text-align: center; /* Center the header */
     }
     .container {
       max-width: 700px;
@@ -50,7 +52,7 @@
 
     /* Taylor Swift lyric banner */
     .lyric-banner {
-      background-color: #7e57c2;
+      background-color: #9a7bde; /* Lighter shade */
       color: white;
       padding: 1rem;
       border-radius: 1rem;
@@ -59,20 +61,24 @@
       margin-bottom: 2rem;
     }
 
+    /* Lyric inside banner should be italic */
+    .lyric-banner blockquote {
+      font-style: italic;
+    }
+
     /* Task list styling */
     .task-list ul {
       list-style-type: none;
       padding-left: 0;
     }
-
     .task-list li {
-      display: flex;
-      align-items: center;
-      margin-bottom: 1rem;
+      margin: 1rem 0;
+      background-color: #ce93d8;
+      padding: 0.5rem;
+      border-radius: 1rem;
     }
-
-    .task-list input[type="checkbox"] {
-      margin-right: 10px;
+    .task-list li input[type="checkbox"] {
+      margin-right: 1rem;
     }
   </style>
 </head>
@@ -80,12 +86,10 @@
   <div class="container">
     <h1>📖 Writing Tracker</h1>
 
-    <!-- Taylor Swift Lyric Banner -->
     <div class="lyric-banner">
       <blockquote id="tswiftLyric">"And if I'm dead to you, why are you at the wake?" – *my tears ricochet*</blockquote>
     </div>
 
-    <!-- Task Description and Word Count -->
     <label for="task">Task Description:</label>
     <input type="text" id="task" placeholder="e.g., Write chapter 3 intro" />
 
@@ -106,21 +110,6 @@
 
     <button onclick="addEntry()">Add Entry</button>
 
-    <!-- Task List Section -->
-    <div class="task-list">
-      <h2>📋 Task List</h2>
-      <input type="text" id="newTask" placeholder="Add a new task" />
-      <button onclick="addTask()">Add Task</button>
-      <ul id="taskList"></ul>
-    </div>
-
-    <!-- Entries Summary Section -->
-    <div class="entries">
-      <h2>Your Entries</h2>
-      <ul id="entriesList"></ul>
-    </div>
-
-    <!-- Summary and Graph Section -->
     <div class="summary">
       <h2>Summary</h2>
       <p><strong>This Week's Words:</strong> <span id="weeklyTotal">0</span></p>
@@ -132,6 +121,19 @@
     <div class="graph-container">
       <h2>📈 Word Count Graph</h2>
       <canvas id="wordChart" height="200"></canvas>
+    </div>
+
+    <div class="task-list">
+      <h2>📝 Your Tasks</h2>
+      <ul id="taskList"></ul>
+      <label for="newTask">Add New Task:</label>
+      <input type="text" id="newTask" placeholder="e.g., Write introduction" />
+      <button onclick="addTask()">Add Task</button>
+    </div>
+
+    <div class="entries">
+      <h2>🗂️ View Entries</h2>
+      <ul id="entriesList"></ul>
     </div>
   </div>
 
@@ -169,19 +171,13 @@
     }
 
     function addTask() {
-      const newTask = document.getElementById('newTask').value;
-      if (newTask) {
-        tasks.push({ task: newTask, completed: false });
+      const taskName = document.getElementById('newTask').value;
+      if (taskName) {
+        tasks.push({ name: taskName, done: false });
         localStorage.setItem('tasks', JSON.stringify(tasks));
         document.getElementById('newTask').value = '';
         renderTaskList();
       }
-    }
-
-    function toggleTask(index) {
-      tasks[index].completed = !tasks[index].completed;
-      localStorage.setItem('tasks', JSON.stringify(tasks));
-      renderTaskList();
     }
 
     function renderTaskList() {
@@ -189,24 +185,15 @@
       taskList.innerHTML = '';
       tasks.forEach((task, index) => {
         const taskItem = document.createElement('li');
-        taskItem.innerHTML = `
-          <input type="checkbox" ${task.completed ? 'checked' : ''} onclick="toggleTask(${index})">
-          ${task.task}
-        `;
+        taskItem.innerHTML = `<input type="checkbox" onclick="toggleTask(${index})" ${task.done ? 'checked' : ''}> ${task.name}`;
         taskList.appendChild(taskItem);
       });
     }
 
-    function renderEntries() {
-      const entriesList = document.getElementById('entriesList');
-      entriesList.innerHTML = '';
-      entries.forEach(entry => {
-        const entryItem = document.createElement('li');
-        entryItem.innerHTML = `
-          <strong>${entry.task}</strong> – ${entry.words} words – ${entry.mood}
-        `;
-        entriesList.appendChild(entryItem);
-      });
+    function toggleTask(index) {
+      tasks[index].done = !tasks[index].done;
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+      renderTaskList();
     }
 
     function updateSummary() {
@@ -244,6 +231,16 @@
       renderEntries();
     }
 
+    function renderEntries() {
+      const entriesList = document.getElementById('entriesList');
+      entriesList.innerHTML = '';
+      entries.forEach(entry => {
+        const entryItem = document.createElement('li');
+        entryItem.textContent = `${entry.task} - ${entry.words} words - Mood: ${entry.mood}`;
+        entriesList.appendChild(entryItem);
+      });
+    }
+
     function drawChart(dataPoints) {
       const ctx = document.getElementById('wordChart').getContext('2d');
       const labels = Object.keys(dataPoints).sort();
@@ -270,8 +267,6 @@
       });
     }
 
-    // Initialize on page load
-    renderTaskList();
     updateSummary();
   </script>
 </body>
