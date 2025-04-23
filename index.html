@@ -6,13 +6,14 @@
   <title>Writing Tracker</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    /* Add sidebar and toggle button styles here */
+    /* Sidebar styles */
     body {
       font-family: 'Winky Rough', cursive;
       background-color: #f3e8ff;
       margin: 0;
       display: flex;
     }
+
     /* Sidebar container */
     .sidebar {
       position: fixed;
@@ -22,6 +23,7 @@
       background-color: #7e57c2;
       transition: 0.5s;
       padding-top: 2rem;
+      z-index: 2;
     }
     .sidebar a {
       display: block;
@@ -35,7 +37,8 @@
     .sidebar a:hover {
       background-color: #ba68c8;
     }
-    /* Toggle button styles */
+
+    /* Open button styles */
     .openbtn {
       font-size: 1.5rem;
       color: white;
@@ -46,28 +49,26 @@
       position: absolute;
       top: 0;
       left: 0;
-      z-index: 1;
+      z-index: 3;
     }
-    /* Page content style */
+
+    /* Page content styles */
     .content {
       margin-left: 0;
       padding: 2rem;
       transition: margin-left 0.5s;
       width: 100%;
     }
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f3e8ff;
-      color: #4b3869;
-      padding: 2rem;
-    }
+
     h1, h2 {
       color: #7e57c2;
     }
+
     .container {
       max-width: 700px;
       margin: auto;
     }
+
     textarea, input, button, select {
       width: 100%;
       margin-top: 0.5rem;
@@ -77,21 +78,25 @@
       border-radius: 1rem;
       font-size: 1rem;
     }
+
     button {
       background-color: #ce93d8;
       color: white;
       border: none;
       cursor: pointer;
     }
+
     button:hover {
       background-color: #ba68c8;
     }
+
     .summary, .lyric, .graph-container {
       margin-top: 2rem;
       background-color: #ede7f6;
       padding: 1rem;
       border-radius: 1rem;
     }
+
     .emoji-select {
       font-size: 1.5rem;
       text-align: center;
