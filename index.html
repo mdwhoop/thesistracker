@@ -192,12 +192,12 @@
     }
 
     function toggleTask(index) {
-      if (tasks[index].done) {
-        tasks.splice(index, 1); // Remove task once done
+      if (!tasks[index].done) {
+        tasks[index].done = true;
         localStorage.setItem('tasks', JSON.stringify(tasks));
         renderTaskList();
       } else {
-        tasks[index].done = !tasks[index].done;
+        tasks.splice(index, 1); // Remove task when checked
         localStorage.setItem('tasks', JSON.stringify(tasks));
         renderTaskList();
       }
@@ -274,7 +274,6 @@
       });
     }
 
-    // Initial Render
     renderTaskList();
     updateSummary();
   </script>
