@@ -5,22 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Writing Tracker</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Winky+Rough&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Winky Rough', cursive;
       background-color: #f3e8ff;
       color: #4b3869;
       padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    h1, h2 {
+    h1 {
+      font-size: 5rem;
       color: #7e57c2;
       text-align: center;
-      font-size: 5rem; /* Header size doubled */
+    }
+    h2 {
+      font-size: 2rem;
+      color: #7e57c2;
     }
     .container {
-      max-width: 700px;
-      margin: auto;
+      display: flex;
+      max-width: 1200px;
+      width: 100%;
+      gap: 2rem;
+      justify-content: space-between;
+    }
+    .left-column, .right-column {
+      width: 48%;
     }
     textarea, input, button, select {
       width: 100%;
@@ -40,7 +52,7 @@
     button:hover {
       background-color: #ba68c8;
     }
-    .summary, .graph-container, .task-list, .entries {
+    .summary, .lyric, .graph-container {
       margin-top: 2rem;
       background-color: #ede7f6;
       padding: 1rem;
@@ -50,106 +62,85 @@
       font-size: 1.5rem;
       text-align: center;
     }
-
-    /* Taylor Swift lyric banner */
     .lyric-banner {
-      background-color: #9a7bde;
-      color: white;
+      background-color: #e1bee7;
       padding: 1rem;
       border-radius: 1rem;
+      margin-bottom: 1rem;
       text-align: center;
-      font-size: 1.25rem;
-      margin-bottom: 2rem;
     }
-
-    /* Lyric inside banner should be italic */
     .lyric-banner blockquote {
+      font-size: 1.2rem;
       font-style: italic;
-    }
-
-    /* Task list styling */
-    .task-list ul {
-      list-style-type: none;
-      padding-left: 0;
-    }
-    .task-list li {
-      margin: 1rem 0;
-      background-color: #ce93d8;
-      padding: 0.5rem;
-      border-radius: 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
     }
   </style>
 </head>
 <body>
+  <h1>📖 Writing Tracker</h1>
+  
+  <div class="lyric-banner">
+    <blockquote id="tswiftLyric">"And if I'm dead to you, why are you at the wake?" – *my tears ricochet*</blockquote>
+  </div>
+  
   <div class="container">
-    <h1>📖 Writing Tracker</h1>
+    <!-- Left Column: Writing Tracker -->
+    <div class="left-column">
+      <label for="task">Task Description:</label>
+      <input type="text" id="task" placeholder="e.g., Write chapter 3 intro" />
 
-    <div class="lyric-banner">
-      <blockquote id="tswiftLyric">"And if I'm dead to you, why are you at the wake?" – *my tears ricochet*</blockquote>
+      <label for="words">Word Count:</label>
+      <input type="number" id="words" placeholder="e.g., 500" />
+
+      <label for="note">Note for Tomorrow:</label>
+      <textarea id="note" rows="3" placeholder="Where you left off, thoughts, etc."></textarea>
+
+      <label for="mood">Mood:</label>
+      <select id="mood" class="emoji-select">
+        <option value="😊">😊 Happy</option>
+        <option value="😐">😐 Meh</option>
+        <option value="😫">😫 Tired</option>
+        <option value="🤩">🤩 Inspired</option>
+        <option value="😭">😭 Stressed</option>
+      </select>
+
+      <button onclick="addEntry()">Add Entry</button>
+
+      <div class="summary">
+        <h2>Summary</h2>
+        <p><strong>This Week's Words:</strong> <span id="weeklyTotal">0</span></p>
+        <p><strong>This Month's Words:</strong> <span id="monthlyTotal">0</span></p>
+        <p><strong>Latest Note:</strong> <span id="latestNote">None yet.</span></p>
+        <p><strong>Latest Mood:</strong> <span id="latestMood">None yet.</span></p>
+      </div>
+
+      <div class="graph-container">
+        <h2>📈 Word Count Graph</h2>
+        <canvas id="wordChart" height="200"></canvas>
+      </div>
     </div>
 
-    <label for="task">Task Description:</label>
-    <input type="text" id="task" placeholder="e.g., Write chapter 3 intro" />
-
-    <label for="words">Word Count:</label>
-    <input type="number" id="words" placeholder="e.g., 500" />
-
-    <label for="note">Note for Tomorrow:</label>
-    <textarea id="note" rows="3" placeholder="Where you left off, thoughts, etc."></textarea>
-
-    <label for="mood">Mood:</label>
-    <select id="mood" class="emoji-select">
-      <option value="😊">😊 Happy</option>
-      <option value="😐">😐 Meh</option>
-      <option value="😫">😫 Tired</option>
-      <option value="🤩">🤩 Inspired</option>
-      <option value="😭">😭 Stressed</option>
-    </select>
-
-    <button onclick="addEntry()">Add Entry</button>
-
-    <div class="summary">
-      <h2>Summary</h2>
-      <p><strong>This Week's Words:</strong> <span id="weeklyTotal">0</span></p>
-      <p><strong>This Month's Words:</strong> <span id="monthlyTotal">0</span></p>
-      <p><strong>Latest Note:</strong> <span id="latestNote">None yet.</span></p>
-      <p><strong>Latest Mood:</strong> <span id="latestMood">None yet.</span></p>
-    </div>
-
-    <div class="graph-container">
-      <h2>📊 Word Count Graph</h2>
-      <canvas id="wordChart" height="200"></canvas>
-    </div>
-
-    <div class="task-list">
-      <h2>📝 Your Tasks</h2>
-      <ul id="taskList"></ul>
-      <label for="newTask">Add New Task:</label>
-      <input type="text" id="newTask" placeholder="e.g., Write introduction" />
-      <button onclick="addTask()">Add Task</button>
-    </div>
-
-    <div class="entries">
-      <h2>🗂️ View Entries</h2>
+    <!-- Right Column: Task List -->
+    <div class="right-column">
+      <h2>Task List</h2>
       <ul id="entriesList"></ul>
+
+      <h2>Tasks</h2>
+      <ul id="taskList"></ul>
     </div>
   </div>
 
   <script>
     let entries = JSON.parse(localStorage.getItem('entries')) || [];
     let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    const lyrics = [
-      "I think he did it, but I just can't prove it – *no body, no crime*",
-      "I'm a mirrorball, I'll show you every version of yourself tonight – *mirrorball*",
-      "You drew stars around my scars – *cardigan*",
-      "We gather here, we line up, weepin' in a sunlit room – *champagne problems*",
-      "Time, curious time, gave me no compasses, gave me no signs – *invisible string*"
-    ];
 
     function getLyric() {
+      const lyrics = [
+        "I think he did it, but I just can't prove it – *no body, no crime*",
+        "I'm a mirrorball, I'll show you every version of yourself tonight – *mirrorball*",
+        "You drew stars around my scars – *cardigan*",
+        "We gather here, we line up, weepin' in a sunlit room – *champagne problems*",
+        "Time, curious time, gave me no compasses, gave me no signs – *invisible string*"
+      ];
       const lyric = lyrics[Math.floor(Math.random() * lyrics.length)];
       document.getElementById('tswiftLyric').textContent = lyric;
     }
@@ -169,32 +160,6 @@
       document.getElementById('note').value = '';
 
       updateSummary();
-    }
-
-    function addTask() {
-      const taskName = document.getElementById('newTask').value;
-      if (taskName) {
-        tasks.push({ name: taskName, done: false });
-        localStorage.setItem('tasks', JSON.stringify(tasks));
-        document.getElementById('newTask').value = '';
-        renderTaskList();
-      }
-    }
-
-    function renderTaskList() {
-      const taskList = document.getElementById('taskList');
-      taskList.innerHTML = '';
-      tasks.forEach((task, index) => {
-        const taskItem = document.createElement('li');
-        taskItem.innerHTML = `<span>${task.name}</span> <button onclick="markComplete(${index})">Mark as Complete</button>`;
-        taskList.appendChild(taskItem);
-      });
-    }
-
-    function markComplete(index) {
-      tasks.splice(index, 1); // Remove task when "Mark as Complete" is clicked
-      localStorage.setItem('tasks', JSON.stringify(tasks));
-      renderTaskList();
     }
 
     function updateSummary() {
@@ -229,17 +194,6 @@
       document.getElementById('latestMood').textContent = latestMood;
       getLyric();
       drawChart(dataPoints);
-      renderEntries();
-    }
-
-    function renderEntries() {
-      const entriesList = document.getElementById('entriesList');
-      entriesList.innerHTML = '';
-      entries.forEach(entry => {
-        const entryItem = document.createElement('li');
-        entryItem.textContent = `${entry.task} - ${entry.words} words - Mood: ${entry.mood}`;
-        entriesList.appendChild(entryItem);
-      });
     }
 
     function drawChart(dataPoints) {
@@ -265,6 +219,24 @@
             legend: { display: false }
           }
         }
+      });
+    }
+
+    function renderTaskList() {
+      const taskList = document.getElementById('taskList');
+      taskList.innerHTML = '';
+      tasks.forEach((task, index) => {
+        const taskItem = document.createElement('li');
+        taskItem.textContent = task;
+        const button = document.createElement('button');
+        button.textContent = 'Mark as Complete';
+        button.onclick = () => {
+          tasks.splice(index, 1);
+          localStorage.setItem('tasks', JSON.stringify(tasks));
+          renderTaskList();
+        };
+        taskItem.appendChild(button);
+        taskList.appendChild(taskItem);
       });
     }
 
