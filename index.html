@@ -16,6 +16,7 @@
     h1, h2 {
       color: #7e57c2;
       text-align: center; /* Center the header */
+      font-size: 2.5rem; /* Larger header text */
     }
     .container {
       max-width: 700px;
@@ -119,7 +120,7 @@
     </div>
 
     <div class="graph-container">
-      <h2>📈 Word Count Graph</h2>
+      <h2>📊 Word Count Graph</h2>
       <canvas id="wordChart" height="200"></canvas>
     </div>
 
@@ -191,9 +192,15 @@
     }
 
     function toggleTask(index) {
-      tasks[index].done = !tasks[index].done;
-      localStorage.setItem('tasks', JSON.stringify(tasks));
-      renderTaskList();
+      if (tasks[index].done) {
+        tasks.splice(index, 1); // Remove task once done
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+        renderTaskList();
+      } else {
+        tasks[index].done = !tasks[index].done;
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+        renderTaskList();
+      }
     }
 
     function updateSummary() {
@@ -247,15 +254,15 @@
       const data = labels.map(date => dataPoints[date]);
       if (window.wordChartInstance) window.wordChartInstance.destroy();
       window.wordChartInstance = new Chart(ctx, {
-        type: 'line',
+        type: 'bar',  // Changed to bar chart
         data: {
           labels,
           datasets: [{
             label: 'Words Written',
             data,
-            fill: false,
+            backgroundColor: '#7e57c2',
             borderColor: '#7e57c2',
-            tension: 0.3
+            borderWidth: 1
           }]
         },
         options: {
@@ -267,6 +274,8 @@
       });
     }
 
+    // Initial Render
+    renderTaskList();
     updateSummary();
   </script>
 </body>
