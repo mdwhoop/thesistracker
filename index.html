@@ -118,13 +118,9 @@
   </div>
   
   <div class="container">
-    <!-- Left Column: Task List -->
+    <!-- Left Column: New Entry & Task List -->
     <div class="left-column">
-      <h2>Task List</h2>
-      <input type="text" id="newTask" placeholder="Add a new task" />
-      <button onclick="addTask()">Add Task</button>
-      <ul id="taskList"></ul>
-      
+      <h2>New Entry</h2>
       <label for="task">Task Description:</label>
       <input type="text" id="task" placeholder="e.g., Write chapter 3 intro" />
 
@@ -144,6 +140,12 @@
       </select>
 
       <button onclick="addEntry()">Add Entry</button>
+
+      <!-- Task List Section Moved Below -->
+      <h2>Task List</h2>
+      <input type="text" id="newTask" placeholder="Add a new task" />
+      <button onclick="addTask()">Add Task</button>
+      <ul id="taskList"></ul>
     </div>
 
     <!-- Right Column: Summary, Graph, and Note for Tomorrow -->
