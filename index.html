@@ -15,8 +15,8 @@
     }
     h1, h2 {
       color: #7e57c2;
-      text-align: center; /* Center the header */
-      font-size: 2.5rem; /* Larger header text */
+      text-align: center;
+      font-size: 2.5rem;
     }
     .container {
       max-width: 700px;
@@ -53,7 +53,7 @@
 
     /* Taylor Swift lyric banner */
     .lyric-banner {
-      background-color: #9a7bde; /* Lighter shade */
+      background-color: #9a7bde;
       color: white;
       padding: 1rem;
       border-radius: 1rem;
@@ -254,7 +254,7 @@
       const data = labels.map(date => dataPoints[date]);
       if (window.wordChartInstance) window.wordChartInstance.destroy();
       window.wordChartInstance = new Chart(ctx, {
-        type: 'bar',  // Changed to bar chart
+        type: 'bar',
         data: {
           labels,
           datasets: [{
