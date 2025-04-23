@@ -6,58 +6,11 @@
   <title>Writing Tracker</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    /* Sidebar styles */
     body {
       font-family: 'Winky Rough', cursive;
       background-color: #f3e8ff;
       margin: 0;
-      display: flex;
-    }
-
-    /* Sidebar container */
-    .sidebar {
-      position: fixed;
-      height: 100vh;
-      width: 0;
-      overflow-x: hidden;
-      background-color: #7e57c2;
-      transition: 0.5s;
-      padding-top: 2rem;
-      z-index: 2;
-    }
-    .sidebar a {
-      display: block;
-      color: white;
-      text-decoration: none;
-      padding: 1rem;
-      font-size: 1.2rem;
-      border-bottom: 1px solid #fff;
-      transition: 0.3s;
-    }
-    .sidebar a:hover {
-      background-color: #ba68c8;
-    }
-
-    /* Open button styles */
-    .openbtn {
-      font-size: 1.5rem;
-      color: white;
-      background-color: #7e57c2;
-      border: none;
-      cursor: pointer;
-      padding: 1rem;
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 3;
-    }
-
-    /* Page content styles */
-    .content {
-      margin-left: 0;
-      padding: 2rem;
-      transition: margin-left 0.5s;
-      width: 100%;
+      padding: 0;
     }
 
     h1, h2 {
@@ -67,6 +20,7 @@
     .container {
       max-width: 700px;
       margin: auto;
+      padding: 2rem;
     }
 
     textarea, input, button, select {
@@ -101,22 +55,21 @@
       font-size: 1.5rem;
       text-align: center;
     }
+
+    /* Chart styles */
+    canvas {
+      width: 100% !important;
+      height: 200px;
+    }
+
+    blockquote {
+      font-style: italic;
+    }
+
   </style>
 </head>
 <body>
-
-  <!-- The sidebar menu -->
-  <div id="mySidebar" class="sidebar">
-    <a href="index.html">Home</a>
-    <a href="tasks.html">Task List</a>
-    <a href="settings.html">Settings</a>
-  </div>
-
-  <!-- Open button for the sidebar -->
-  <button class="openbtn" onclick="toggleNav()">☰</button>
-
-  <!-- Main content area -->
-  <div class="content">
+  <div class="container">
     <h1>📖 Writing Tracker</h1>
 
     <label for="task">Task Description:</label>
@@ -159,19 +112,6 @@
   </div>
 
   <script>
-    // Sidebar toggle function
-    function toggleNav() {
-      const sidebar = document.getElementById("mySidebar");
-      const content = document.querySelector(".content");
-      if (sidebar.style.width === "250px") {
-        sidebar.style.width = "0";
-        content.style.marginLeft = "0";
-      } else {
-        sidebar.style.width = "250px";
-        content.style.marginLeft = "250px";
-      }
-    }
-
     let entries = JSON.parse(localStorage.getItem('entries')) || [];
     const lyrics = [
       "I think he did it, but I just can't prove it – *no body, no crime*",
