@@ -100,6 +100,14 @@
       padding: 1rem;
       border-radius: 1rem;
     }
+    /* Style for Note for Tomorrow */
+    .note-for-tomorrow {
+      margin-top: 2rem;
+      background-color: #f0e1fc;
+      padding: 1rem;
+      border-radius: 1rem;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -110,8 +118,13 @@
   </div>
   
   <div class="container">
-    <!-- Left Column: Writing Tracker -->
+    <!-- Left Column: Task List -->
     <div class="left-column">
+      <h2>Task List</h2>
+      <input type="text" id="newTask" placeholder="Add a new task" />
+      <button onclick="addTask()">Add Task</button>
+      <ul id="taskList"></ul>
+      
       <label for="task">Task Description:</label>
       <input type="text" id="task" placeholder="e.g., Write chapter 3 intro" />
 
@@ -131,6 +144,14 @@
       </select>
 
       <button onclick="addEntry()">Add Entry</button>
+    </div>
+
+    <!-- Right Column: Summary, Graph, and Note for Tomorrow -->
+    <div class="right-column">
+      <div class="note-for-tomorrow">
+        <h2>📝 Note for Tomorrow</h2>
+        <p id="noteForTomorrowText">No note for tomorrow yet.</p>
+      </div>
 
       <div class="summary">
         <h2>Summary</h2>
@@ -139,19 +160,11 @@
         <p><strong>Latest Note:</strong> <span id="latestNote">None yet.</span></p>
         <p><strong>Latest Mood:</strong> <span id="latestMood">None yet.</span></p>
       </div>
-    </div>
 
-    <!-- Right Column: Graph and Task List -->
-    <div class="right-column">
       <div class="graph-container">
         <h2>📈 Word Count Graph</h2>
         <canvas id="wordChart" height="100"></canvas>
       </div>
-
-      <h2>Task List</h2>
-      <input type="text" id="newTask" placeholder="Add a new task" />
-      <button onclick="addTask()">Add Task</button>
-      <ul id="taskList"></ul>
     </div>
   </div>
 
@@ -225,6 +238,7 @@
       document.getElementById('monthlyTotal').textContent = monthlyTotal;
       document.getElementById('latestNote').textContent = latestNote;
       document.getElementById('latestMood').textContent = latestMood;
+      document.getElementById('noteForTomorrowText').textContent = latestNote || "No note for tomorrow yet.";
       getLyric();
       drawChart(dataPoints);
     }
@@ -260,7 +274,7 @@
       entryList.innerHTML = '';
       entries.forEach(entry => {
         const entryItem = document.createElement('li');
-        entryItem.textContent = `${entry.date.slice(0, 10)}: ${entry.task} – ${entry.words} words`;
+        entryItem.textContent = `${entry.date.slice(0, 10)}: ${entry.task} – ${entry.words} words – Mood: ${entry.mood}`;
         entryList.appendChild(entryItem);
       });
     }
