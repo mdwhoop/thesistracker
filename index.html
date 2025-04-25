@@ -114,7 +114,9 @@
   <h1>📖 Thesis Tracker ✨ </h1>
   
   <div class="lyric-banner">
-    <blockquote id="tswiftLyric">"And if I'm dead to you, why are you at the wake?" – *my tears ricochet*</blockquote>
+    <blockquote id="tswiftLyric">"And if I'm dead to you, why are you at the wake?"</blockquote>
+    <p id="tswiftSong" style="margin-top: 0.5rem; font-style: italic;">– my tears ricochet</p>
+
   </div>
   
   <div class="container">
@@ -181,16 +183,19 @@
     let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 
     function getLyric() {
-      const lyrics = [
-        "I think he did it, but I just can't prove it – *no body, no crime*",
-        "I'm a mirrorball, I'll show you every version of yourself tonight – *mirrorball*",
-        "You drew stars around my scars – *cardigan*",
-        "We gather here, we line up, weepin' in a sunlit room – *champagne problems*",
-        "Time, curious time, gave me no compasses, gave me no signs – *invisible string*"
-      ];
-      const lyric = lyrics[Math.floor(Math.random() * lyrics.length)];
-      document.getElementById('tswiftLyric').textContent = lyric;
-    }
+  const lyrics = [
+    { quote: "All of this to say, I hope you're okay.", song: "Fortnight" },
+    { quote: "You're in self-sabotage mode, throwing spikes down on the road; but I've seen this episode and still loved the show.", song: "But Daddy I Love Him" },
+    { quote: "I'd rather burn my whole life down than listen to one more second of all this bitching and moaning.", song: "Who's Afraid of Little Old Me?" },
+    { quote: "I'll tell you something about my good name – it's mine alone to disgrace.", song: "Who's Afraid of Little Old Me?" },
+    { quote: "Time, curious time, gave me no compasses, gave me no signs", song: "invisible string" },
+    { quote: "And if I'm dead to you, why are you at the wake?", song: "my tears ricochet" }
+  ];
+  const chosen = lyrics[Math.floor(Math.random() * lyrics.length)];
+  document.getElementById('tswiftLyric').textContent = `"${chosen.quote}"`;
+  document.getElementById('tswiftSong').textContent = `– ${chosen.song}`;
+}
+
 
     function addEntry() {
       const task = document.getElementById('task').value;
