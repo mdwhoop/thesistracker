@@ -7,7 +7,6 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  <!-- Embed Winky Rough Font -->
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Winky+Rough:ital,wght@0,300..900;1,300..900&display=swap');
   </style>
@@ -125,8 +124,20 @@
       margin: 0.5rem;
     }
 
+    /* New Styles for Graphs */
+    .graph-container {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2rem;
+    }
+
+    canvas {
+      width: 45%;
+      height: 300px;
+    }
   </style>
 </head>
+
 <body>
   <h1>📖 Thesis Tracker ✨ </h1>
   
@@ -197,9 +208,11 @@
       <div class="graph-container">
         <h2>📈 Word Count Graph</h2>
         <canvas id="wordChart" height="100"></canvas>
+        <canvas id="timeWorkedChart"></canvas> <!-- New time worked chart -->
       </div>
     </div>
   </div>
+
 
   <!-- Previous Entries Section -->
   <div class="previous-entries">
@@ -346,6 +359,7 @@
       document.getElementById('noteForTomorrowText').textContent = note || "No note for tomorrow yet.";
       updateSummary();
       renderEntries();
+      createTimeWorkedChart();
     }
 
 
@@ -389,6 +403,40 @@
       getLyric();
       drawChart(dataPoints);
     }
+      // Group entries by date
+  function getTimeWorkedData() {
+      const timeWorkedPerDay = {};
+    
+      // Iterate through each entry to sum the time worked by date
+      entries.forEach(entry => {
+        const date = new Date(entry.date).toLocaleDateString(); // Use a formatted date (e.g., "4/26/2025")
+        if (!timeWorkedPerDay[date]) {
+          timeWorkedPerDay[date] = 0;
+        }
+        timeWorkedPerDay[date] += entry.workMinutes; // Add the time worked for that day
+      });
+  
+    return timeWorkedPerDay;
+  }
+
+    function prepareTimeWorkedGraphData() {
+      const timeWorkedPerDay = getTimeWorkedData();
+    
+      // Get the labels (dates) and data (time worked) in arrays
+      const labels = Object.keys(timeWorkedPerDay);
+      const data = Object.values(timeWorkedPerDay);
+    
+      return {
+        labels: labels,
+        datasets: [{
+          label: 'Time Worked (Minutes)',
+          data: data,
+          borderColor: '#7e57c2', // Lavender color for the graph
+          backgroundColor: 'rgba(126, 87, 194, 0.2)', // Light lavender fill
+          borderWidth: 1
+        }]
+      };
+    }
 
     function drawChart(dataPoints) {
       const ctx = document.getElementById('wordChart').getContext('2d');
@@ -415,6 +463,46 @@
         }
       });
     }
+
+    function createTimeWorkedChart() {
+      const ctx = document.getElementById('timeWorkedChart').getContext('2d');
+    
+      const timeWorkedData = prepareTimeWorkedGraphData();
+    
+      const timeWorkedChart = new Chart(ctx, {
+        type: 'line', // Line chart for time worked
+        data: timeWorkedData,
+        options: {
+          responsive: true,
+          scales: {
+            x: {
+              type: 'category', // Categories for the X axis (dates)
+              title: {
+                display: true,
+                text: 'Date'
+              }
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Minutes Worked'
+              },
+              beginAtZero: true // Ensure the y-axis starts at 0
+            }
+          },
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return `${context.raw} minutes`;
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
 
     function renderEntries() {
       const entryList = document.getElementById('entryList');
