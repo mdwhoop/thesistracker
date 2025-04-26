@@ -425,33 +425,36 @@
 
     function createTimeWorkedChart() {
       const ctx = document.getElementById('timeWorkedChart').getContext('2d');
-    
-      new Chart(ctx, {
-        type: 'bar', // 🛑 change this from 'line' to 'bar'
-        data: {
-          labels: weeklySummaries.map(summary => summary.weekStart),
-          datasets: [{
-            label: 'Time Worked (hours)',
-            data: weeklySummaries.map(summary => summary.timeWorked || 0),
-            backgroundColor: 'rgba(174, 144, 215, 0.6)', // soft purple bars 💜
-            borderColor: 'rgba(174, 144, 215, 1)',
-            borderWidth: 1,
-            borderRadius: 10 // ⬅️ cute rounded bars!
-          }]
-        },
+      const timeWorkedData = prepareTimeWorkedGraphData();
+      
+      // If there was a previous chart instance, destroy it
+      if (window.timeWorkedChartInstance) window.timeWorkedChartInstance.destroy();
+      
+      window.timeWorkedChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: timeWorkedData,
         options: {
           responsive: true,
           scales: {
             y: {
               beginAtZero: true,
               ticks: {
-                stepSize: 1 // 1-hour steps
+                callback: function(value) {
+                  return value + ' min';
+                }
               }
             }
           },
           plugins: {
             legend: {
-              display: false // hides the legend if you want it cleaner
+              display: false
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return context.raw + ' minutes';
+                }
+              }
             }
           }
         }
