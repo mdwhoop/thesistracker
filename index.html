@@ -268,7 +268,7 @@
     
       // Get the total time worked in minutes
       const workMinutes = Math.floor(elapsedSeconds / 60);
-      
+    
       // Reset the timer
       elapsedSeconds = 0;
       updateTimerDisplay();
@@ -285,7 +285,7 @@
         cancelButtonText: 'No, reset',
         confirmButtonColor: '#7e57c2', // Lavender button
         cancelButtonColor: '#ce93d8', // Soft pink button
-      }).then((result) => { ... });
+      }).then((result) => {
         if (result.isConfirmed) {
           // If the user clicked "Yes, save it"
           const task = document.getElementById('task').value;
@@ -329,19 +329,25 @@
       const savedWorkMinutes = parseInt(localStorage.getItem('currentSessionWorkMinutes')) || 0;
       const workMinutes = savedWorkMinutes;
       localStorage.removeItem('currentSessionWorkMinutes');
-      const entry = { task, words, note, mood, workMinutes, date: date.toISOString() };
+      
+      // Reset the timer for the next session
       elapsedSeconds = 0;
       updateTimerDisplay();
+    
+      const entry = { task, words, note, mood, workMinutes, date: date.toISOString() };
       entries.push(entry);
       localStorage.setItem('entries', JSON.stringify(entries));
-
+    
       document.getElementById('task').value = '';
       document.getElementById('words').value = '';
       document.getElementById('note').value = '';
-
+    
+      // Update "Note for Tomorrow" after adding an entry, not on timer stop
+      document.getElementById('noteForTomorrowText').textContent = note || "No note for tomorrow yet.";
       updateSummary();
       renderEntries();
     }
+
 
     function updateSummary() {
       const now = new Date();
