@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Thesis Tracker</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <!-- Embed Winky Rough Font -->
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Winky+Rough:ital,wght@0,300..900;1,300..900&display=swap');
@@ -264,7 +265,51 @@
     function stopTimer() {
       clearInterval(timerInterval);
       isTimerRunning = false;
+    
+      // Get the total time worked in minutes
+      const workMinutes = Math.floor(elapsedSeconds / 60);
+      
+      // Reset the timer
+      elapsedSeconds = 0;
+      updateTimerDisplay();
+    
+      // Use SweetAlert2 to show a confirmation modal
+      Swal.fire({
+        title: 'Are you sure you want to stop?',
+        text: `You worked for ${workMinutes} minutes. Do you want to save this time?`,
+        icon: 'info',
+        background: '#f3e8ff', // Pastel background
+        color: '#4b3869', // Text color matching your theme
+        showCancelButton: true,
+        confirmButtonText: 'Yes, save it!',
+        cancelButtonText: 'No, reset',
+        confirmButtonColor: '#7e57c2', // Lavender button
+        cancelButtonColor: '#ce93d8', // Soft pink button
+      }).then((result) => { ... });
+        if (result.isConfirmed) {
+          // If the user clicked "Yes, save it"
+          const task = document.getElementById('task').value;
+          const words = parseInt(document.getElementById('words').value) || 0;
+          const note = document.getElementById('note').value;
+          const mood = document.getElementById('mood').value;
+          const date = new Date();
+    
+          // Create an entry object and store it
+          const entry = { task, words, note, mood, workMinutes, date: date.toISOString() };
+          entries.push(entry);
+          localStorage.setItem('entries', JSON.stringify(entries));
+    
+          // Update the UI
+          updateSummary();
+          renderEntries();
+        } else {
+          // If the user clicked "No, reset"
+          Swal.fire('Timer reset', 'Your work time has been reset.', 'info');
+        }
+      });
     }
+
+
     
     function updateTimerDisplay() {
       const hours = String(Math.floor(elapsedSeconds / 3600)).padStart(2, '0');
@@ -281,7 +326,9 @@
       const note = document.getElementById('note').value;
       const mood = document.getElementById('mood').value;
       const date = new Date();
-      const workMinutes = Math.floor(elapsedSeconds / 60);
+      const savedWorkMinutes = parseInt(localStorage.getItem('currentSessionWorkMinutes')) || 0;
+      const workMinutes = savedWorkMinutes;
+      localStorage.removeItem('currentSessionWorkMinutes');
       const entry = { task, words, note, mood, workMinutes, date: date.toISOString() };
       elapsedSeconds = 0;
       updateTimerDisplay();
