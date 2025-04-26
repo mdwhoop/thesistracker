@@ -79,9 +79,10 @@
       font-size: 1.2rem;
       font-style: italic;
     }
-    /* New Style for Previous Entries Section */
+    /* Updated Style for Previous Entries Section */
     .previous-entries {
       width: 100%;
+      max-width: 1200px;
       background-color: #ede7f6;
       padding: 1rem;
       border-radius: 1rem;
@@ -124,34 +125,28 @@
       margin: 0.5rem;
     }
 
-    /* New Styles for Graphs */
+    /* Updated Styles for Graphs */
     .graph-container h2 {
       text-align: center;
-      width: 100%; /* Make title span full width */
+      width: 100%;
       margin-bottom: 1rem;
     }
     .graph-container {
       display: flex;
-      flex-direction: column; /* Stack elements vertically */
-      align-items: center;    /* Center horizontally */
-      gap: 2rem;             /* Space between chart sections */
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
       margin-top: 2rem;
     }
-    .charts-row {
-      display: flex;
-      justify-content: center;
-      width: 100%;
-      gap: 2rem;
-    }
-    
-    /* Style individual chart wrappers */
+    /* Updated chart wrapper for vertical stacking */
     .chart-wrapper {
-      width: 45%;
+      width: 100%;
       text-align: center;
+      margin-bottom: 2rem;
     }
     
     canvas {
-      width: 100%; /* Make canvas fill its container */
+      width: 100%;
       height: 250px;
     }
   </style>
@@ -162,7 +157,6 @@
   <div class="lyric-banner">
     <blockquote id="tswiftLyric">"And if I'm dead to you, why are you at the wake?"</blockquote>
     <p id="tswiftSong" style="margin-top: 0.5rem; font-style: italic;">– my tears ricochet</p>
-
   </div>
   
   <div class="container">
@@ -222,23 +216,21 @@
         <p><strong>Latest Mood:</strong> <span id="latestMood">None yet.</span></p>
       </div>
 
-
       <div class="graph-container">
-    <h2>📈 Charts</h2>
-    <div class="charts-row">
-      <div class="chart-wrapper">
-        <h2>Word Count</h2>
-        <canvas id="wordChart" height="100"></canvas>
-      </div>
-      <div class="chart-wrapper">
-        <h2>Time</h2>
-        <canvas id="timeWorkedChart"></canvas>
+        <h2>📈 Charts</h2>
+        <div class="chart-wrapper">
+          <h2>Word Count</h2>
+          <canvas id="wordChart" height="100"></canvas>
+        </div>
+        <div class="chart-wrapper">
+          <h2>Time</h2>
+          <canvas id="timeWorkedChart"></canvas>
+        </div>
       </div>
     </div>
   </div>
 
-
-  <!-- Previous Entries Section -->
+  <!-- Previous Entries Section moved outside the container to be full width -->
   <div class="previous-entries">
     <h2>Previous Entries</h2>
     <ul id="entryList"></ul>
@@ -270,11 +262,30 @@
     { quote: "Time breaks down your mind and body - don't you let it touch your soul.", song: "Timeless" },
     { quote: "And sometimes there's no proof, you just know.", song: "Timeless" },
     { quote: "Hope it's nice where you are. And I hope the sun shines and it's a beautiful day.", song: "Last Kiss" },
-    { quote: "Haven't you heard what becomes of curious minds?", song: "Wonderland" },
+    { quote: "'Cause there were pages turned with the bridges burned, everything you lose is a step you take.", song: "You're On Your Own, Kid" },
+    { quote: "make the friendship bracelets, take the moment and taste it, you've got no reason to be afraid.", song: "You're On Your Own, Kid" },
+    { quote: "Draw the cat eye sharp enough to kill a man.", song: "Vigilante Shit" },
+    { quote: "They say looks can kill and I might try.", song: "Vigilante Shit" },
+    { quote: "Ladies always rise above, ladies know what people want.", song: "Vigilante Shit" },
+    { quote: "Best believe I'm still bejeweled; when I walk in the room, I can still make the whole place shimmer.", song: "Bejweled" },
     { quote: "Sweet like honey, karma is a cat, purring in my lap 'cause it loves me.", song: "Karma" },
+    { quote: "And the voices that implore 'you should be doing more' - to you I can admit that I'm just too soft for all of it", song: "Sweet Nothing" },
     { quote: "If you fail to plan, you plan to fail.", song: "Mastermind" },
-
-
+    { quote: "Tears on the letter, I vowed not to cry anymore.", song: "The Great War" },
+    { quote: "Romance is not dead if you keep it just yours.", song: "Paris" },
+    { quote: "It feels like a perfect night for breakfast at midnight, to fall in love with strangers.", song: "22" },
+    { quote: "Tonight's the night when we forget about the deadlines.", song: "22" },
+    { quote: "We're happy, free, confused and lonely in the best way; it's miserable and magical.", song: "22" },
+    { quote: "And all I feel in my stomach is butterflies - the beautiful kind, making up for lost time, taking flight, making me feel right", song: "Everything Has Changed" },
+    { quote: "And I see the permanent damage you did to me; never again, I just wish I could forget when it was magic.", song: "Better Man" },
+    { quote: "The more that you say, the less I know.", song: "willow" },
+    { quote: "Life was a willow and it bent right to your wind.", song: "willow" },
+    { quote: "What must it be like to grow up that beautiful? With your hair falling into place like dominoes.", song: "gold rush" },
+    { quote: "My mind turns your life into folklore; I can't dare to dream about you anymore.", song: "gold rush" },
+    { quote: "Tonight's the night when we forget about the deadlines.", song: "22" },
+    { quote: "Tonight's the night when we forget about the deadlines.", song: "22" },
+    { quote: "Tonight's the night when we forget about the deadlines.", song: "22" },
+    { quote: "Tonight's the night when we forget about the deadlines.", song: "22" },
   ];
   const chosen = lyrics[Math.floor(Math.random() * lyrics.length)];
   document.getElementById('tswiftLyric').textContent = `"${chosen.quote}"`;
