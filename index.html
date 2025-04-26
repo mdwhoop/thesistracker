@@ -125,21 +125,37 @@
     }
 
     /* New Styles for Graphs */
+    .graph-container h2 {
+      text-align: center;
+      width: 100%; /* Make title span full width */
+      margin-bottom: 1rem;
+    }
     .graph-container {
       display: flex;
-      justify-content: space-between;
-      gap: 1rem;  /* Adds space between the graphs */
+      flex-direction: column; /* Stack elements vertically */
+      align-items: center;    /* Center horizontally */
+      gap: 2rem;             /* Space between chart sections */
       margin-top: 2rem;
-      flex-wrap: wrap;  /* Ensures graphs wrap if necessary */
     }
-
+    .charts-row {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      gap: 2rem;
+    }
+    
+    /* Style individual chart wrappers */
+    .chart-wrapper {
+      width: 45%;
+      text-align: center;
+    }
+    
     canvas {
-      width: 45%;  /* Decrease width to make the graphs smaller */
-      height: 250px;  /* Adjust height for a smaller fit */
+      width: 100%; /* Make canvas fill its container */
+      height: 250px;
     }
   </style>
 </head>
-
 <body>
   <h1>📖 Thesis Tracker ✨ </h1>
   
@@ -208,9 +224,15 @@
 
 
       <div class="graph-container">
-        <h2>📈 Word Count Graph</h2>
+    <h2>📈 Charts</h2>
+    <div class="charts-row">
+      <div class="chart-wrapper">
+        <h2>Word Count</h2>
         <canvas id="wordChart" height="100"></canvas>
-        <canvas id="timeWorkedChart"></canvas> <!-- New time worked chart -->
+      </div>
+      <div class="chart-wrapper">
+        <h2>Time Spent Working</h2>
+        <canvas id="timeWorkedChart"></canvas>
       </div>
     </div>
   </div>
