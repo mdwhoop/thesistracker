@@ -128,12 +128,14 @@
     .graph-container {
       display: flex;
       justify-content: space-between;
+      gap: 1rem;  /* Adds space between the graphs */
       margin-top: 2rem;
+      flex-wrap: wrap;  /* Ensures graphs wrap if necessary */
     }
 
     canvas {
-      width: 45%;
-      height: 300px;
+      width: 48%;  /* Decrease width to make the graphs smaller */
+      height: 250px;  /* Adjust height for a smaller fit */
     }
   </style>
 </head>
