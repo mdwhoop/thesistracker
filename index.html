@@ -6,11 +6,9 @@
   <title>Thesis Tracker</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Winky+Rough:ital,wght@0,300..900;1,300..900&display=swap');
   </style>
-
   <style>
     body {
       font-family: 'Winky Rough', cursive;
@@ -79,7 +77,6 @@
       font-size: 1.2rem;
       font-style: italic;
     }
-    /* Updated Style for Previous Entries Section */
     .previous-entries {
       width: 100%;
       max-width: 1200px;
@@ -88,8 +85,12 @@
       border-radius: 1rem;
       margin-top: 2rem;
     }
-    .previous-entries h2 {
-      text-align: center;
+    .previous-entries summary {
+      cursor: pointer;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #7e57c2;
+      list-style: none;
     }
     .previous-entries ul {
       list-style-type: none;
@@ -101,7 +102,6 @@
       padding: 1rem;
       border-radius: 1rem;
     }
-    /* Style for Note for Tomorrow */
     .note-for-tomorrow {
       margin-top: 2rem;
       background-color: #f0e1fc;
@@ -125,7 +125,6 @@
       margin: 0.5rem;
     }
 
-    /* Updated Styles for Graphs */
     .graph-container h2 {
       text-align: center;
       width: 100%;
@@ -138,7 +137,6 @@
       gap: 2rem;
       margin-top: 2rem;
     }
-    /* Updated chart wrapper for vertical stacking */
     .chart-wrapper {
       width: 100%;
       text-align: center;
@@ -230,10 +228,11 @@
     </div>
   </div>
 
-  <!-- Previous Entries Section moved outside the container to be full width -->
   <div class="previous-entries">
-    <h2>Previous Entries</h2>
-    <ul id="entryList"></ul>
+    <details>
+      <summary><h2>Previous Entries</h2></summary>
+      <ul id="entryList"></ul>
+    </details>
   </div>
 
   <script>
@@ -282,10 +281,6 @@
     { quote: "Life was a willow and it bent right to your wind.", song: "willow" },
     { quote: "What must it be like to grow up that beautiful? With your hair falling into place like dominoes.", song: "gold rush" },
     { quote: "My mind turns your life into folklore; I can't dare to dream about you anymore.", song: "gold rush" },
-    { quote: "Tonight's the night when we forget about the deadlines.", song: "22" },
-    { quote: "Tonight's the night when we forget about the deadlines.", song: "22" },
-    { quote: "Tonight's the night when we forget about the deadlines.", song: "22" },
-    { quote: "Tonight's the night when we forget about the deadlines.", song: "22" },
   ];
   const chosen = lyrics[Math.floor(Math.random() * lyrics.length)];
   document.getElementById('tswiftLyric').textContent = `"${chosen.quote}"`;
@@ -314,50 +309,30 @@
       clearInterval(timerInterval);
       isTimerRunning = false;
     
-      // Get the total time worked in minutes
-      const workMinutes = Math.floor(elapsedSeconds / 60);
-    
-      // Reset the timer
+const workMinutes = Math.floor(elapsedSeconds / 60);
       elapsedSeconds = 0;
-      updateTimerDisplay();
+      updateTimerDisplay();    
     
-      // Use SweetAlert2 to show a confirmation modal
       Swal.fire({
         title: 'Are you sure you want to stop?',
         text: `You worked for ${workMinutes} minutes. Do you want to save this time?`,
         icon: 'info',
-        background: '#f3e8ff', // Pastel background
-        color: '#4b3869', // Text color matching your theme
+        background: '#f3e8ff',
+        color: '#4b3869',
         showCancelButton: true,
         confirmButtonText: 'Yes, save it!',
         cancelButtonText: 'No, reset',
-        confirmButtonColor: '#7e57c2', // Lavender button
-        cancelButtonColor: '#ce93d8', // Soft pink button
+        confirmButtonColor: '#7e57c2',
+        cancelButtonColor: '#ce93d8',
       }).then((result) => {
         if (result.isConfirmed) {
-          // If the user clicked "Yes, save it"
-          const task = document.getElementById('task').value;
-          const words = parseInt(document.getElementById('words').value) || 0;
-          const note = document.getElementById('note').value;
-          const mood = document.getElementById('mood').value;
-          const date = new Date();
-    
-          // Create an entry object and store it
-          const entry = { task, words, note, mood, workMinutes, date: date.toISOString() };
-          entries.push(entry);
-          localStorage.setItem('entries', JSON.stringify(entries));
-    
-          // Update the UI
-          updateSummary();
-          renderEntries();
+          localStorage.setItem('currentSessionWorkMinutes', workMinutes);
+          Swal.fire('Time saved!', `You worked for ${workMinutes} minutes. You can now add it with your next entry.`, 'success');
         } else {
-          // If the user clicked "No, reset"
           Swal.fire('Timer reset', 'Your work time has been reset.', 'info');
         }
       });
     }
-
-
     
     function updateTimerDisplay() {
       const hours = String(Math.floor(elapsedSeconds / 3600)).padStart(2, '0');
@@ -367,7 +342,6 @@
     }
 
 
-
     function addEntry() {
       const task = document.getElementById('task').value;
       const words = parseInt(document.getElementById('words').value) || 0;
@@ -375,31 +349,23 @@
       const mood = document.getElementById('mood').value;
       const date = new Date();
       const savedWorkMinutes = parseInt(localStorage.getItem('currentSessionWorkMinutes')) || 0;
-      const workMinutes = savedWorkMinutes;
-      localStorage.removeItem('currentSessionWorkMinutes');
-      
-      // Reset the timer for the next session
-      elapsedSeconds = 0;
-      updateTimerDisplay();
-    
-      const entry = { task, words, note, mood, workMinutes, date: date.toISOString() };
+
+      const entry = { task, words, note, mood, workMinutes: savedWorkMinutes, date: date.toISOString() };
       entries.push(entry);
       localStorage.setItem('entries', JSON.stringify(entries));
-    
+      localStorage.removeItem('currentSessionWorkMinutes');
+
       document.getElementById('task').value = '';
       document.getElementById('words').value = '';
       document.getElementById('note').value = '';
-    
-      // Update "Note for Tomorrow" after adding an entry, not on timer stop
-      document.getElementById('noteForTomorrowText').textContent = note || "No note for tomorrow yet.";
+
       updateSummary();
       renderEntries();
     }
-// Group entries by date
+
   function getTimeWorkedData() {
       const timeWorkedPerDay = {};
     
-      // Iterate through each entry to sum the time worked by date
       entries.forEach(entry => {
         const date = new Date(entry.date).toLocaleDateString(); // Use a formatted date (e.g., "4/26/2025")
         if (!timeWorkedPerDay[date]) {
@@ -414,7 +380,6 @@
     function prepareTimeWorkedGraphData() {
       const timeWorkedPerDay = getTimeWorkedData();
     
-      // Get the labels (dates) and data (time worked) in arrays
       const labels = Object.keys(timeWorkedPerDay);
       const data = Object.values(timeWorkedPerDay);
     
@@ -460,7 +425,6 @@
       const ctx = document.getElementById('timeWorkedChart').getContext('2d');
       const timeWorkedData = prepareTimeWorkedGraphData();
       
-      // If there was a previous chart instance, destroy it
       if (window.timeWorkedChartInstance) window.timeWorkedChartInstance.destroy();
       
       window.timeWorkedChartInstance = new Chart(ctx, {
