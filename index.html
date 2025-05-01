@@ -8,7 +8,41 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Winky+Rough:ital,wght@0,300..900;1,300..900&display=swap');
-  </style>
+  
+    details[open] summary ~ * {
+      animation: fadeIn 0.5s ease-in;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      transition: transform 0.2s ease;
+    }
+
+    .emoji-select:hover {
+      animation: wiggle 0.4s ease;
+    }
+    @keyframes wiggle {
+      0% { transform: rotate(0deg); }
+      25% { transform: rotate(3deg); }
+      50% { transform: rotate(-3deg); }
+      75% { transform: rotate(2deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0.9); opacity: 0; }
+      60% { transform: scale(1.05); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+    .bounce-in {
+      animation: bounceIn 0.4s ease;
+    }
+
+</style>
   <style>
     body {
       font-family: 'Winky Rough', cursive;
@@ -147,7 +181,41 @@
       width: 100%;
       height: 250px;
     }
-  </style>
+  
+    details[open] summary ~ * {
+      animation: fadeIn 0.5s ease-in;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      transition: transform 0.2s ease;
+    }
+
+    .emoji-select:hover {
+      animation: wiggle 0.4s ease;
+    }
+    @keyframes wiggle {
+      0% { transform: rotate(0deg); }
+      25% { transform: rotate(3deg); }
+      50% { transform: rotate(-3deg); }
+      75% { transform: rotate(2deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0.9); opacity: 0; }
+      60% { transform: scale(1.05); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+    .bounce-in {
+      animation: bounceIn 0.4s ease;
+    }
+
+</style>
 </head>
 <body>
   <h1>📖 Thesis Tracker ✨ </h1>
@@ -506,6 +574,7 @@ const workMinutes = Math.floor(elapsedSeconds / 60);
       entryList.innerHTML = '';
       entries.forEach(entry => {
         const entryItem = document.createElement('li');
+        entryItem.classList.add('bounce-in');
         entryItem.textContent = `${entry.date.slice(0, 10)}: ${entry.task} – ${entry.words} words – Mood: ${entry.mood}`;
         entryList.appendChild(entryItem);
       });
