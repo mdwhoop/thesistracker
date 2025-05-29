@@ -278,8 +278,10 @@
         <h2>Summary</h2>
         <p><strong>This Week's Words:</strong> <span id="weeklyTotal">0</span></p>
         <p><strong>This Month's Words:</strong> <span id="monthlyTotal">0</span></p>
+        <p><strong>Total Words:</strong> <span id="totalWords">0</span></p>
         <p><strong>This Week's Work Time:</strong> <span id="weeklyWork">0 min</span></p>
         <p><strong>This Month's Work Time:</strong> <span id="monthlyWork">0 min</span></p>
+        <p><strong>Total Work Time:</strong> <span id="totalWork">0 min</span></p>
         <p><strong>Latest Note:</strong> <span id="latestNote">None yet.</span></p>
         <p><strong>Latest Mood:</strong> <span id="latestMood">None yet.</span></p>
       </div>
@@ -541,6 +543,10 @@
     }
 
     function updateSummary() {
+      let totalWorkMinutes = 0;
+
+      let totalWords = 0;
+
       const now = new Date();
       let weeklyTotal = 0;
       let monthlyTotal = 0;
@@ -561,8 +567,10 @@
         dataPoints[dayKey] += entry.words;
         if (entryDate >= weekAgo) weeklyTotal += entry.words;
         if (entryDate >= monthAgo) monthlyTotal += entry.words;
+        totalWords += entry.words;
         if (entryDate >= weekAgo) weeklyWorkMinutes += entry.workMinutes || 0;
         if (entryDate >= monthAgo) monthlyWorkMinutes += entry.workMinutes || 0;
+        totalWorkMinutes += entry.workMinutes || 0;
       }
 
       if (entries.length > 0) {
@@ -583,11 +591,13 @@
 
       document.getElementById('weeklyTotal').textContent = weeklyTotal;
       document.getElementById('monthlyTotal').textContent = monthlyTotal;
+      document.getElementById('totalWords').textContent = totalWords;
       document.getElementById('latestNote').textContent = latestNote;
       document.getElementById('latestMood').textContent = latestMood;
       document.getElementById('noteForTomorrowText').textContent = latestNote || "No note for tomorrow yet.";
       document.getElementById('weeklyWork').textContent = weeklyWorkMinutes + " min";
       document.getElementById('monthlyWork').textContent = monthlyWorkMinutes + " min";
+      document.getElementById('totalWork').textContent = totalWorkMinutes + " min";
       getLyric();
       drawChart(dataPoints);
       createTimeWorkedChart();
